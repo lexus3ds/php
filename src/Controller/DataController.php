@@ -6,6 +6,7 @@ use App\Services\DataService;
 use AuthUser;
 use DataFilter;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,6 +21,7 @@ use OpenApi\Attributes as OA;
 #phpinfo();
 
 #[Route('/api')]
+#[Security(name: 'Bearer')]
 class DataController extends AbstractController
 {
 
@@ -44,14 +46,6 @@ class DataController extends AbstractController
 
     #[Route('/user-data', methods: ['GET'])]
     #[IsGranted('ROLE_PDD_TSPEC_DICTIONARY.CRUD', message: 'Ошибка доступа')]
-    #[OA\Response(
-        response: 200,
-        description: 'Returns the rewards of an user',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: AlbumDto::class, groups: ['full']))
-        )
-    )]
     public function getUserData(DataService $dataService, UserInterface $user, ): JsonResponse
     {
         $this->logmethodcall("DataController.getUserData()", $user);
