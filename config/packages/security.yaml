@@ -1,0 +1,61 @@
+security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    #password_hashers:
+    #    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        our_custom_user_provider: 
+           id: App\Security\OidcUserProvider1
+    #     users_in_memory: { memory: null }
+            # memory:
+            #     users:
+            #         john_admin: { password: '$2y$13$jxGxc ... IuqDju', roles: ['ROLE_ADMIN'] }
+            #         PDDMOD_KC_C: { password: '$2y$13$PFi1I ... rGwXCZ', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] }
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            # security: true
+            # custom_authenticators:
+            #     - App\Security\Auth1
+
+            #provider: our_custom_user_provider
+            #lazy: true
+            #provider: users_in_memory
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+            stateless: true
+            access_token:
+                token_handler:
+                    oidc:
+                        claim: preferred_username
+                        algorithms: ['ES256', 'RS256']
+                        keyset: '{"keys":[{"kid":"tZAADb0jV-5tqVYnx-Rg39IpMnlesACKTXFzuHwufjU","kty":"RSA","alg":"RS256","use":"sig","n":"-ep4eCY2SmVsLcuh-e5fPweiR8yaVGbKtPHCv_4gO7Owsgr6YU92HQzJOSMnMDu4YFclC54gP5rz8QZEWZI0yhuejQEhQGEdajseaMofk1Y--JMreBdHDyM6Oeg0PiRkunCXyoq6POyLAmTzq5CN-1i8JEYcDjv1yy_jOfiiyyA9J0qr1NGp8bHMmENRE72n3P9miO1UlgREGEjXcTo6g_di3fJMPqbc5-2SWJfDg7sCCz0r9vNEmNx1B6GbrkUpKahw_pxNmK2hZj53SccdTwFvYUklGikqqGyS6IscyZrgEQqWFuoeYYZrWvzTKBVwmw6i2TCxFJ1z_mSXm8mpZw","e":"AQAB","x5c":["MIICpTCCAY0CBgGNjd9iYjANBgkqhkiG9w0BAQsFADAWMRQwEgYDVQQDDAttaXJyb3JfdGVzdDAeFw0yNDAyMDkxMjM1NDNaFw0zNDAyMDkxMjM3MjNaMBYxFDASBgNVBAMMC21pcnJvcl90ZXN0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+ep4eCY2SmVsLcuh+e5fPweiR8yaVGbKtPHCv/4gO7Owsgr6YU92HQzJOSMnMDu4YFclC54gP5rz8QZEWZI0yhuejQEhQGEdajseaMofk1Y++JMreBdHDyM6Oeg0PiRkunCXyoq6POyLAmTzq5CN+1i8JEYcDjv1yy/jOfiiyyA9J0qr1NGp8bHMmENRE72n3P9miO1UlgREGEjXcTo6g/di3fJMPqbc5+2SWJfDg7sCCz0r9vNEmNx1B6GbrkUpKahw/pxNmK2hZj53SccdTwFvYUklGikqqGyS6IscyZrgEQqWFuoeYYZrWvzTKBVwmw6i2TCxFJ1z/mSXm8mpZwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCAsAEXtVHq9DRul8XJSId7ggnY6NUlzxPJhgoUjRqpzz9TnepVri5mYv++NyE1qpehOTxffsE5PT9CPA4yAyrMp1Sqgbo/DynLxBzL2wQqITfEDyrRjUtlanxZT0FFPaKt0rBuPblw9WjJXl34Cy+/elvlABkdmIxzRr1IyGGX3L/8/BLk8z3l0RsFXLZ4LsoqmrzzeEeoalD3LYYArR0MqZFSkCcNw/Cpi79VvpKnL2KfmJBHwYpOg9bxKLARBPyXIX6YUY0bbABmCom84o4tqxNZMyli5GXMAckM8us6QuY0bYwvn4vFaqBLxrirTKHKOQ/nw3U0WbQA+QWzTU6E"],"x5t":"HirwqCFHDpukmAK80dhj998OIK4","x5t#S256":"_oqZeo8PQzz0pOQmY1LvHQyb_06O9Ed5v1ncdauJGUs"}]}'
+                        audience: 'account'
+                        issuers: ['https://keycloak-dev.inlinegroup-c.ru/realms/mirror_test']
+                # token_handler: App\Security\AccessTokenHandler
+                # success_handler: App\Security\AuthenticationSuccessHandler
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
+
+
+# when@test:
+#     security:
+        # password_hashers:
+        #     # By default, password hashers are resource intensive and take time. This is
+        #     # important to generate secure password hashes. In tests however, secure hashes
+        #     # are not important, waste resources and increase test times. The following
+        #     # reduces the work factor to the lowest possible values.
+        #     Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+        #         algorithm: auto
+        #         cost: 4 # Lowest possible value for bcrypt
+        #         time_cost: 3 # Lowest possible value for argon
+        #         memory_cost: 10 # Lowest possible value for argon

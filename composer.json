@@ -11,10 +11,11 @@
         "symfony/dotenv": "7.2.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.2.*",
+        "symfony/http-client": "7.2.*",
         "symfony/runtime": "7.2.*",
-        "symfony/yaml": "7.2.*"
-    },
-    "require-dev": {
+        "symfony/security-bundle": "7.2.*",
+        "symfony/yaml": "7.2.*",
+        "web-token/jwt-library": "^4.0"
     },
     "config": {
         "allow-plugins": {
