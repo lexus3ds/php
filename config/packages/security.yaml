@@ -5,7 +5,7 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         our_custom_user_provider: 
-           id: App\Security\OidcUserProvider1
+           id: App\Security\Core\User\OidcUserProvider
     #     users_in_memory: { memory: null }
             # memory:
             #     users:
