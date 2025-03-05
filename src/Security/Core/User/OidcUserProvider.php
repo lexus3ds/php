@@ -2,9 +2,8 @@
 
 namespace App\Security\Core\User;
 
-use AuthUser;
+use App\Core\User\AuthUser;
 use Exception;
-use Jose\Component\Signature\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\User\OidcUser;
 use Symfony\Component\Security\Core\User\AttributesBasedUserProviderInterface;

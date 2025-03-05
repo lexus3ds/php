@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Core\User;
+
 use Symfony\Component\Security\Core\User\OidcUser;
 use Symfony\Component\Security\Core\User\UserInterface;
 
