@@ -45,7 +45,7 @@ class DataService
     public function getDataByFilter(DataFilter $filter, int $page = 0, int $size = 10, SortOrder $sort = null): array
     {
 
-        $this->logmethodcall("on DataService.getDataByFilter()", $this->security->getUser());
+        $this->logmethodcall("DataService.getDataByFilter()", $this->security->getUser());
 
         if (!$this->security->isGranted("ROLE_PDD_TEMPLATE.CRUD"))
             throw new AccessDeniedException("ERROR Acess Denied in DataService.getDataByFilter()");
