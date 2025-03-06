@@ -7,13 +7,16 @@ use App\Filter\DataFilter;
 use App\QuerySupport\SortOrder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\AST\Subselect;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 class TemplateRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, private MvalRepository $valRepository)
+    public function __construct(ManagerRegistry $registry, private MvalRepository $valRepository, private EntityManagerInterface $em)
     {
         parent::__construct($registry, Template::class);
     }
@@ -21,13 +24,17 @@ class TemplateRepository extends ServiceEntityRepository
     public function getDataByFiterPaged(DataFilter $filter, int $page = 0, int $size = 10, SortOrder $sort = null): array
     {
         $queryBuilder = $this->createQueryBuilder("t");
-
+        //->select('t')
+        // ->addSelect(
+        //     '('.$this->valRepository->createQueryBuilder('mval')->select('count(mval.fieldValue)')->where("mval.docId = t.id")->getDQL().') as column'
+        // );
         if ($filter->extension) {
             $queryBuilder->where('t.extension = :p_ext')->setParameter('p_ext', $filter->extension);
         }
 
         if ($filter->createdBy) {
-            $lastWhere = $queryBuilder->andWhere('t.createdBy like :p_created_by')->setParameter('p_created_by', '%' . addcslashes($filter->createdBy, '_%') . '%');
+            $lastWhere = $queryBuilder->andWhere('t.createdBy like :p_created_by')
+                ->setParameter('p_created_by', '%' . addcslashes($filter->createdBy, '_%') . '%');
         }
 
         if ($sort && $sort->field && $sort->direction) {
@@ -38,9 +45,9 @@ class TemplateRepository extends ServiceEntityRepository
 
         $queryBuilder->setMaxResults($size)->setFirstResult($page * $size);
 
-        echo ($queryBuilder->getQuery()->getSQL());
+        //echo ($queryBuilder->getQuery()->getSQL());
 
-        $paginator = new Paginator($queryBuilder);
+        $paginator = new Paginator($queryBuilder, true);
         $totalResults = count($paginator);
 
         return [
@@ -77,7 +84,7 @@ class TemplateRepository extends ServiceEntityRepository
                 $subOr = $sub->expr()->orX();
                 $initIndex = 0;
                 if ($initiatorIn)
-                    $subOr->add($queryBuilder->expr()->in($mvalSub . '.fieldValue', $initiatorIn));
+                    $subOr->add($sub->expr()->in($mvalSub . '.fieldValue', $initiatorIn));
                 foreach ($initiatorLike as $initiator) {
                     $subOr->add(
                         $sub->expr()->like(

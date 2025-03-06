@@ -19,9 +19,9 @@ class TemplateAuthority
             ARRAY_FILTER_USE_KEY
         );
 
-        // if (array_any(array_keys($roles_ava), fn($key): bool => str_ends_with($key, 'ALL'))) {
-        //     return [];
-        // }
+        if (array_any(array_keys($roles_ava), fn($key): bool => str_ends_with($key, 'ALL'))) {
+            return [];
+        }
 
         $authFilters = [];
 
